@@ -10,7 +10,15 @@ plan bolt_log4j::vuln (
   TargetSpec $targets,
 ) {
   $final_target = get_targets($targets)
+
+  # Read file
+  $win_scanner = file::read('files/log4jscanner-v0.5.0-windows-amd64.zip')
+  $nix_scanner = file::read('files/log4jscanner-v0.5.0-linux-amd64.tar')
   out::message("targets are ${targets}")
-  $command_result = run_command('whoami', $targets)
-  return $command_result
+
+  # copy scanner
+  $file_results = write_file($nix_scanner, '/tmp', $final_target, { '_run_as' => 'root' })
+
+  # $command_result = run_command('whoami', $targets)
+  return $file_results
 }
