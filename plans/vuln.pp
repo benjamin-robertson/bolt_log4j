@@ -13,7 +13,7 @@ plan bolt_log4j::vuln (
 
   # Read file
   $win_scanner = file::read('bolt_log4j/log4jscanner-v0.5.0-windows-amd64.zip')
-  $nix_scanner = file::read('bolt_log4j/log4jscanner-v0.5.0-linux-amd64.tar')
+  $nix_scanner = file::read('bolt_log4j/log4jscanner-v0.5.0-linux-amd64.tar.gz')
   out::message("targets are ${targets}")
 
   # copy scanner
