@@ -1,0 +1,4 @@
+2024-07-01T11:55:14.250267 INFO   [main] [Bolt::Logger] Loaded project from '/Users/benjamin/Documents/Repo/bolt_log4j'
+2024-07-01T11:55:14.280788 DEBUG  [main] [Bolt::Executor] Started with 100 max thread(s)
+2024-07-01T11:55:14.679799 DEBUG  [main] [Bolt::PAL] Loading modules from /opt/puppetlabs/bolt/lib/ruby/gems/2.7.0/gems/bolt-3.21.0/bolt-modules:/Users/benjamin/Documents/Repo/bolt_log4j/modules:/Users/benjamin/Documents/Repo/bolt_log4j/.modules:/opt/puppetlabs/bolt/lib/ruby/gems/2.7.0/gems/bolt-3.21.0/modules
+2024-07-01T11:55:14.680444 DEBUG  [main] [Bolt::Inventory] Loaded inventory from /Users/benjamin/Documents/Repo/bolt_log4j/inventory.yaml
