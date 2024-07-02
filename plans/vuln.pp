@@ -29,7 +29,7 @@ plan bolt_log4j::vuln (
     $win_file_eligible_targets = $win_targets - get_targets($win_file_failed)
   }
   if $linux_targets.length >= 1 {
-    $linux_file_results = write_file($linux_targets, '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz', $linux_targets, { '_run_as' => 'root', '_catch_errors' => true })
+    $linux_file_results = write_file($nix_scanner, '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz', $linux_targets, { '_run_as' => 'root', '_catch_errors' => true })
     $linux_file_successful = $linux_file_results.ok_set
     $linux_file_failed = $linux_file_results.error_set.names
     $linux_file_eligible_targets = $linux_targets - get_targets($linux_file_failed)
