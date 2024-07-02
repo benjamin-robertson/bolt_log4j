@@ -13,8 +13,8 @@ plan bolt_log4j::vuln (
 
   # collect facts
   run_plan('facts', 'targets' => $targets)
-  $linux_targets = get_targets($targets).filter | $n | { $n.factsp['kernel'] == 'Linux' }
-  $win_targets = get_targets($targets).filter | $n | { $n.factsp['kernel'] == 'Windows' }
+  $linux_targets = get_targets($targets).filter | $n | { $n.facts['kernel'] == 'Linux' }
+  $win_targets = get_targets($targets).filter | $n | { $n.facts['kernel'] == 'Windows' }
 
   # Read file
   $win_scanner = file::read('bolt_log4j/log4jscanner-v0.5.0-windows-amd64.zip')
