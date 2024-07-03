@@ -39,19 +39,20 @@ plan bolt_log4j::vuln (
 
   # Perform apply prep
   $prep_results = apply_prep($linux_file_eligible_targets, '_catch_errors' => true, '_run_as' => 'root' )
-  out::message("Prep results: ${prep_results}")
+  # out::message("Prep results: ${prep_results}")
 
   # Apply block Linux
   $linux_apply_results = apply($linux_file_eligible_targets, '_catch_errors' => true, '_run_as' => 'root') {
     # exec { '/usr/bin/sleep 50': }
     # extract the file
-    archive { '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz':
-      ensure       => present,
-      creates      => '/tmp/log4jscanner/log4jscanner',
-      source       => '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz',
-      extract_path => '/tmp',
-      extract      => true,
-    }
+    # archive { '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz':
+    #   ensure       => present,
+    #   creates      => '/tmp/log4jscanner/log4jscanner',
+    #   source       => '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz',
+    #   extract_path => '/tmp',
+    #   extract      => true,
+    # }
+    notify { 'hello world': }
   }
 
   out::message("Apply results: ${linux_apply_results}")
