@@ -44,9 +44,9 @@ plan bolt_log4j::vuln (
 
   # Apply block Linux
   $linux_apply_results = apply($linux_targets,
-                                '_description'  => 'extact archive',
-                                '_catch_errors' => true,
-                                '_run_as'       => 'root') {
+    '_description'  => 'extact archive',
+    '_catch_errors' => true,
+  '_run_as'       => 'root') {
     archive { '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz':
       ensure       => present,
       creates      => '/tmp/log4jscanner/log4jscanner',
@@ -58,11 +58,18 @@ plan bolt_log4j::vuln (
     # confirm the file is exectable by all
     file { '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz':
       ensure => file,
-      mode   => '0755'
+      mode   => '0755',
     }
   }
 
-  out::message("Apply results: ${linux_apply_results}")
+  $linux_apply_okay = $linux_apply_results.ok_set.names
+  $linux_apply_okay_targets = get_targets($linux_apply_okay)
 
-  return $linux_apply_results
+  # out::message("Apply results: ${linux_apply_results}")
+
+  $linux_vuln_results = run_command('/tmp/log4jscanner/log4jscanner /', $linux_apply_okay_targets, '_catch_errors' => true, '_run_as' => 'root')
+
+  out::message("vuln results ${linux_vuln_results}")
+
+  return $linux_vuln_results
 }
