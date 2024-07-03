@@ -39,6 +39,7 @@ plan bolt_log4j::vuln (
 
   # Apply block Linux
   $linux_apply_results = apply($linux_file_eligible_targets, '_catch_errors' => true, '_run_as' => 'root') {
+    exec { '/usr/bin/sleep 50': }
     # extract the file
     archive { '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz':
       ensure       => present,
