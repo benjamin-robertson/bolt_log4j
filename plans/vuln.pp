@@ -43,7 +43,7 @@ plan bolt_log4j::vuln (
     archive { '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz':
       ensure       => present,
       # creates      => '/tmp/log4jscanner/log4jscanner',
-      source       => '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz',
+      # source       => '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz',
       extract_path => '/tmp',
       extract      => true,
     }
