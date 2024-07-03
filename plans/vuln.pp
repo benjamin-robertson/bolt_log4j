@@ -42,14 +42,19 @@ plan bolt_log4j::vuln (
   # out::message("Prep results: ${prep_results}")
 
   # Apply block Linux
-  $linux_apply_results = apply($linux_file_eligible_targets,
-                                '_description'  => 'extact archive',
-                                '_catch_errors' => true,
-                                '_run_as'       => 'root') {
-    notify { 'hello world': }
+  # $linux_apply_results = apply($linux_file_eligible_targets,
+  #                               '_description'  => 'extact archive',
+  #                               '_catch_errors' => true,
+  #                               '_run_as'       => 'root') {
+  #   notify { 'hello world': }
+  # }
+  $apply_results = apply($linux_file_eligible_targets) {
+    file { '/tmp/test':
+      ensure => file,
+    }
   }
 
-  out::message("Apply results: ${linux_apply_results}")
+  out::message("Apply results: ${apply_results}")
 
-  return $linux_apply_results
+  return $apply_results
 }
