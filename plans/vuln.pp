@@ -51,5 +51,5 @@ plan bolt_log4j::vuln (
 
   out::message("Apply results: ${linux_apply_results}")
 
-  return $linux_file_results
+  return $linux_apply_results
 }
