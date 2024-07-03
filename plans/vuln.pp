@@ -38,7 +38,7 @@ plan bolt_log4j::vuln (
   }
 
   # Perform apply prep
-  $prep_results = apply_prep($linux_file_eligible_targets, '_catch_errors' => true )
+  $prep_results = apply_prep($linux_file_eligible_targets, '_catch_errors' => true, '_run_as' => 'root' )
   out::message("Prep results: ${prep_results}")
 
   # Apply block Linux
