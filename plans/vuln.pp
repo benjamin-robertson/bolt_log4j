@@ -54,6 +54,12 @@ plan bolt_log4j::vuln (
       extract_path => '/tmp',
       extract      => true,
     }
+
+    # confirm the file is exectable by all
+    file { '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz':
+      ensure => file,
+      mode   => '0755'
+    }
   }
 
   out::message("Apply results: ${linux_apply_results}")
