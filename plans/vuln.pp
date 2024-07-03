@@ -8,7 +8,7 @@
 # @param targets The targets to run on.
 plan bolt_log4j::vuln (
   TargetSpec         $targets,
-  Stdlib::Windowpath $windows_file_path = 'c:\\',
+  Stdlib::Windowspath $windows_file_path = 'c:\\',
   Stdlib::Unixpath   $linux_file_path   = '/tmp'
 ) {
   $final_target = get_targets($targets)
@@ -37,7 +37,8 @@ plan bolt_log4j::vuln (
     $linux_file_eligible_targets = $linux_targets - get_targets($linux_file_failed)
   }
 
-  #Apply block, extract the 
+  # Apply block windows
+  # $linux_apply_results = apply($linux_file_eligible_targets, )
 
   return $linux_file_results
 }
