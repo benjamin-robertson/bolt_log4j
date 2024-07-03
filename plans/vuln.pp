@@ -21,7 +21,7 @@ plan bolt_log4j::vuln (
   # # Read file
   # $win_scanner = file::read('bolt_log4j/log4jscanner-v0.5.0-windows-amd64.zip')
   # $nix_scanner = file::read('bolt_log4j/log4jscanner-v0.5.0-linux-amd64.tar.gz')
-  $test_file = file::read('/usr/bin/vim')
+  # $test_file = file::read('/usr/bin/vim')
   # out::message("targets are ${targets}")
 
   # # copy scanner
@@ -43,19 +43,20 @@ plan bolt_log4j::vuln (
   # out::message("Prep results: ${prep_results}")
 
   # Apply block Linux
-  # $linux_apply_results = apply($linux_file_eligible_targets,
-  #                               '_description'  => 'extact archive',
-  #                               '_catch_errors' => true,
-  #                               '_run_as'       => 'root') {
-  #   notify { 'hello world': }
-  # }
-  $apply_results = apply($linux_targets) {
-    file { '/tmp/test':
-      ensure => file,
+  $linux_apply_results = apply($linux_targets,
+                                '_description'  => 'extact archive',
+                                '_catch_errors' => true,
+                                '_run_as'       => 'root') {
+    archive { '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz':
+      ensure       => present,
+      creates      => '/tmp/log4jscanner/log4jscanner',
+      source       => 'puppt:///bolt_log4j/log4jscanner-v0.5.0-linux-amd64.tar.gz',
+      extract_path => '/tmp',
+      extract      => true,
     }
   }
 
-  out::message("Apply results: ${apply_results}")
+  out::message("Apply results: ${linux_apply_results}")
 
-  return $apply_results
+  return $linux_apply_results
 }
