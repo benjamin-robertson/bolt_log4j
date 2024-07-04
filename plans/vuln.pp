@@ -1,15 +1,14 @@
-# This is the structure of a simple plan. To learn more about writing
-# Puppet plans, see the documentation: http://pup.pt/bolt-puppet-plans
-
-# The summary sets the description of the plan that will appear
-# in 'bolt plan show' output. Bolt uses puppet-strings to parse the
-# summary and parameters from the plan.
-# @summary A plan created with bolt plan new.
+# @summary Bolt plan to detect hosts vulnerable to log4j
+#
+# lint:ignore:140chars
+#
 # @param targets The targets to run on.
+# @param windows_file_path File path to install the log4j scanner on windows. Default 'C:\'
+# @param linux_file_path File path to install the log4j scanner on Linux. Default '/tmp'
 plan bolt_log4j::vuln (
-  TargetSpec         $targets,
+  TargetSpec          $targets,
   Stdlib::Windowspath $windows_file_path = 'c:\\',
-  Stdlib::Unixpath   $linux_file_path   = '/tmp'
+  Stdlib::Unixpath    $linux_file_path   = '/tmp'
 ) {
   $final_target = get_targets($targets)
 
@@ -18,40 +17,20 @@ plan bolt_log4j::vuln (
   $linux_targets = get_targets($targets).filter | $n | { $n.facts['kernel'] == 'Linux' }
   $win_targets = get_targets($targets).filter | $n | { $n.facts['kernel'] == 'Windows' }
 
-  # # Read file
-  # $win_scanner = file::read('bolt_log4j/log4jscanner-v0.5.0-windows-amd64.zip')
-  # $nix_scanner = file::read('bolt_log4j/log4jscanner-v0.5.0-linux-amd64.tar.gz')
-  # $test_file = file::read('/usr/bin/vim')
-  # out::message("targets are ${targets}")
-
-  # # copy scanner
-  # if $win_targets.length >= 1 {
-  #   $win_file_results = write_file($win_scanner, "${windows_file_path}/log4jscanner-v0.5.0-windows-amd64.zip", $win_targets, { '_run_as' => 'root', '_catch_errors' => true })
-  #   $win_file_successful = $win_file_results.ok_set
-  #   $win_file_failed = $win_file_results.error_set.names
-  #   $win_file_eligible_targets = $win_targets - get_targets($win_file_failed)
-  # }
-  # if $linux_targets.length >= 1 {
-  #   $linux_file_results = write_file($nix_scanner, "${linux_file_path}/log4jscanner-v0.5.0-linux-amd64.tar.gz", $linux_targets, { '_run_as' => 'root', '_catch_errors' => true })
-  #   $linux_file_successful = $linux_file_results.ok_set
-  #   $linux_file_failed = $linux_file_results.error_set.names
-  #   $linux_file_eligible_targets = $linux_targets - get_targets($linux_file_failed)
-  # }
-
   # Perform apply prep
-  $prep_results = apply_prep($linux_targets, '_catch_errors' => true, '_run_as' => 'root' )
-  # out::message("Prep results: ${prep_results}")
+  apply_prep($linux_targets, '_catch_errors' => true, '_run_as' => 'root' )
+  apply_prep($win_targets, '_catch_errors' => true )
 
   # Apply block Linux
   $linux_apply_results = apply($linux_targets,
-    '_description'  => 'extact archive',
+    '_description'  => 'Extract archive on Linux',
     '_catch_errors' => true,
   '_run_as'       => 'root') {
-    archive { '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz':
+    archive { "${linux_file_path}/log4jscanner-v0.5.0-linux-amd64.tar.gz":
       ensure       => present,
-      creates      => '/tmp/log4jscanner/log4jscanner',
+      creates      => "${linux_file_path}/log4jscanner/log4jscanner",
       source       => 'puppet:///modules/bolt_log4j/log4jscanner-v0.5.0-linux-amd64.tar.gz',
-      extract_path => '/tmp',
+      extract_path => $linux_file_path,
       extract      => true,
     }
 
@@ -64,16 +43,37 @@ plan bolt_log4j::vuln (
 
   $linux_apply_okay = $linux_apply_results.ok_set.names
   $linux_apply_okay_targets = get_targets($linux_apply_okay)
+  $linux_apply_failed = $linux_apply_results.error_set.names
 
+  # Apply block Windows
+  $win_apply_results = apply($win_targets,
+    '_description'  => 'Extract archive on Windows',
+  '_catch_errors' => true) {
+    archive { "${windows_file_path}/log4jscanner-v0.5.0-windows-amd64.zip":
+      ensure       => present,
+      creates      => "${windows_file_path}log4jscanner\\log4jscanner",
+      source       => 'puppet:///modules/bolt_log4j/log4jscanner-v0.5.0-windows-amd64.zip',
+      extract_path => $linux_file_path,
+      extract      => true,
+    }
+  }
+
+  $win_apply_okay = $win_apply_results.ok_set.names
+  $win_apply_okay_targets = get_targets($win_apply_okay)
+  $win_apply_failed = $win_apply_results.error_set.names
+
+  # Run the vulnerablity scan
   $linux_vuln_results = run_command('/tmp/log4jscanner/log4jscanner /', $linux_apply_okay_targets, '_catch_errors' => true, '_run_as' => 'root' )
+  $win_vuln_results = run_command('C:\\log4jscanner\\log4jscanner.exe', $win_apply_okay_targets, '_catch_errors' => true )
 
-  out::message("vuln results ${linux_vuln_results}")
+  out::message("Linux vuln results ${linux_vuln_results}")
+  out::message("Win vuln results ${win_vuln_results}")
 
   # Get vulnerable systems
   $vulnerable_systems = $linux_vuln_results.ok_set.filter | $result | { $result.value['stdout'].length > 1 }
 
-  # Get failed systems
-  $errored_systems = $linux_vuln_results.error_set.names
+  # Get failed systems, including those which failed the apply block
+  $errored_systems = $linux_vuln_results.error_set.names + $linux_apply_failed + $win_apply_failed
 
   $original_errored_systems = defined('$errored_systems') ? {
     true    => $errored_systems,
@@ -97,3 +97,4 @@ plan bolt_log4j::vuln (
 
   return $summary_results
 }
+# lint:endignore
