@@ -101,7 +101,7 @@ plan bolt_log4j::vuln (
     $memo + { $value.target.name => split($value.value['stdout'], '\n') }
   }
 
-  $vulnerable_systems = $vulnerable_results_win + $vulnerable_results_linux
+  $vulnerable_results = $vulnerable_results_win + $vulnerable_results_linux
 
   $summary_results = {
     'errored_systems'    => $original_errored_systems,
