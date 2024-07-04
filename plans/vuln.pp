@@ -72,6 +72,6 @@ plan bolt_log4j::vuln (
   out::message("vuln results ${linux_vuln_results}")
 
   # Get vulnerable systems
-  $vulnerable_systems = $linux_vuln_results.ok_set.filter | $result | { $results.value['stdout'].length > 1 }
+  $vulnerable_systems = $linux_vuln_results.ok_set.filter | $result | { $result.value['stdout'].length > 1 }
   return $vulnerable_systems
 }
