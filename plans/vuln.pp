@@ -64,10 +64,10 @@ plan bolt_log4j::vuln (
 
   # Run the vulnerablity scan
   $linux_vuln_results = run_command('/tmp/log4jscanner/log4jscanner /', $linux_apply_okay_targets, '_catch_errors' => true, '_run_as' => 'root' )
-  $win_vuln_results = run_command('C:\\log4jscanner\\log4jscanner.exe', $win_apply_okay_targets, '_catch_errors' => true )
+  $win_vuln_results = run_command('C:\\log4jscanner\\log4jscanner.exe c:\\', $win_apply_okay_targets, '_catch_errors' => true )
 
   # out::message("Linux vuln results ${linux_vuln_results}")
-  # out::message("Win vuln results ${win_vuln_results}")
+  out::message("Win vuln results ${win_vuln_results}")
 
   # Get vulnerable systems
   $vulnerable_linux_systems = $linux_vuln_results.ok_set.filter | $result | { $result.value['stdout'].length > 1 }
