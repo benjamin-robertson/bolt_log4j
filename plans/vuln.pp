@@ -65,8 +65,6 @@ plan bolt_log4j::vuln (
   $linux_apply_okay = $linux_apply_results.ok_set.names
   $linux_apply_okay_targets = get_targets($linux_apply_okay)
 
-  # out::message("Apply results: ${linux_apply_results}")
-
   $linux_vuln_results = run_command('/tmp/log4jscanner/log4jscanner /', $linux_apply_okay_targets, '_catch_errors' => true, '_run_as' => 'root' )
 
   out::message("vuln results ${linux_vuln_results}")
@@ -89,7 +87,7 @@ plan bolt_log4j::vuln (
 
   $vulnerable_results = $original_vulnerable_systems.reduce({}) | $memo, $value | {
     out::message("${value.target} ${value.value['stdout']}")
-    $memo + { $value.target.name => $value.value['stdout'] }
+    $memo + { $value.target.name => "${value.value['stdout']}" }
   }
 
   $summary_results = {
