@@ -96,5 +96,5 @@ plan bolt_log4j::vuln (
     'vulnerable_systems' => $vulnerable_results,
   }
 
-  return $vulnerable_systems
+  return $summary_results
 }
