@@ -87,7 +87,7 @@ plan bolt_log4j::vuln (
     default => {},
   }
 
-  $vulnerable_results = $original_vulnerable_systems.reduce | $memo, $value | {
+  $vulnerable_results = $original_vulnerable_systems.reduce({}) | $memo, $value | {
     out::message("${value.target} ${value.value['stdout']}")
     $memo + { "${value.target}" => "${value.value['stdout']}" }
   }
