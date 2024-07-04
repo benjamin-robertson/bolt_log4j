@@ -53,7 +53,7 @@ plan bolt_log4j::vuln (
       ensure       => present,
       creates      => "${windows_file_path}log4jscanner\\log4jscanner",
       source       => 'puppet:///modules/bolt_log4j/log4jscanner-v0.5.0-windows-amd64.zip',
-      extract_path => $linux_file_path,
+      extract_path => $windows_file_path,
       extract      => true,
     }
   }
