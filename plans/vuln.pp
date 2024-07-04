@@ -66,11 +66,12 @@ plan bolt_log4j::vuln (
   $linux_vuln_results = run_command('/tmp/log4jscanner/log4jscanner /', $linux_apply_okay_targets, '_catch_errors' => true, '_run_as' => 'root' )
   $win_vuln_results = run_command('C:\\log4jscanner\\log4jscanner.exe', $win_apply_okay_targets, '_catch_errors' => true )
 
-  out::message("Linux vuln results ${linux_vuln_results}")
-  out::message("Win vuln results ${win_vuln_results}")
+  # out::message("Linux vuln results ${linux_vuln_results}")
+  # out::message("Win vuln results ${win_vuln_results}")
 
   # Get vulnerable systems
-  $vulnerable_systems = $linux_vuln_results.ok_set.filter | $result | { $result.value['stdout'].length > 1 }
+  $vulnerable_linux_systems = $linux_vuln_results.ok_set.filter | $result | { $result.value['stdout'].length > 1 }
+  $vulnerable_win_systems = $win_vuln_results.ok_set.filter | $result | { $result.value['stdout'].length > 1 }
 
   # Get failed systems, including those which failed the apply block
   $errored_systems = $linux_vuln_results.error_set.names + $linux_apply_failed + $win_apply_failed
@@ -80,15 +81,27 @@ plan bolt_log4j::vuln (
     default => {},
   }
 
-  $original_vulnerable_systems = defined('$vulnerable_systems') ? {
-    true    => $vulnerable_systems,
+  $original_vulnerable_systems_linux = defined('$vulnerable_linux_systems') ? {
+    true    => $vulnerable_linux_systems,
     default => {},
   }
 
-  $vulnerable_results = $original_vulnerable_systems.reduce({}) | $memo, $value | {
+  $original_vulnerable_systems_win = defined('$vulnerable_win_systems') ? {
+    true    => $vulnerable_win_systems,
+    default => {},
+  }
+
+  $vulnerable_results_linux = $original_vulnerable_systems_linux.reduce({}) | $memo, $value | {
     out::message("${value.target} ${value.value['stdout']}")
     $memo + { $value.target.name => split($value.value['stdout'], '\n') }
   }
+
+  $vulnerable_results_win = $original_vulnerable_systems_win.reduce({}) | $memo, $value | {
+    out::message("${value.target} ${value.value['stdout']}")
+    $memo + { $value.target.name => split($value.value['stdout'], '\n') }
+  }
+
+  $vulnerable_systems = $vulnerable_results_win + $vulnerable_results_linux
 
   $summary_results = {
     'errored_systems'    => $original_errored_systems,
