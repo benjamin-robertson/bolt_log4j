@@ -106,8 +106,9 @@ plan bolt_log4j::vuln (
   $vulnerable_results = $vulnerable_results_win + $vulnerable_results_linux
 
   $summary_results = {
-    'errored_systems'    => $original_errored_systems,
-    'vulnerable_systems' => $vulnerable_results,
+    'errored_systems'          => $original_errored_systems,
+    'vulnerable_systems'       => $vulnerable_results,
+    'vulnerable_systems_total' => $vulnerable_results.length,
   }
 
   return $summary_results
