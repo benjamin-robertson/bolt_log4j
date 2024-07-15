@@ -58,7 +58,7 @@ plan bolt_log4j::vuln (
     }
   }
 
-  # out::message("Windows apply results ${win_apply_results}")
+  out::message("Windows apply results ${win_apply_results}")
 
   $win_apply_okay = $win_apply_results.ok_set.names
   $win_apply_okay_targets = get_targets($win_apply_okay)
@@ -69,7 +69,7 @@ plan bolt_log4j::vuln (
   $win_vuln_results = run_command('C:\\log4jscanner\\log4jscanner.exe c:\\', $win_apply_okay_targets, '_catch_errors' => true )
 
   # out::message("Linux vuln results ${linux_vuln_results}")
-  # out::message("Win vuln results ${win_vuln_results}")
+  out::message("Win vuln results ${win_vuln_results}")
 
   # Get vulnerable systems
   $vulnerable_linux_systems = $linux_vuln_results.ok_set.filter | $result | { $result.value['stdout'].length > 1 }
