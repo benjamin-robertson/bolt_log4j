@@ -58,7 +58,7 @@ plan bolt_log4j::vuln (
     }
   }
 
-  out::message("Windows apply results ${win_apply_results}")
+  # out::message("Windows apply results ${win_apply_results}")
 
   $win_apply_okay = $win_apply_results.ok_set.names
   $win_apply_okay_targets = get_targets($win_apply_okay)
