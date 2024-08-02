@@ -1,10 +1,6 @@
 # bolt_log4j
 
-Welcome to your new module. A short overview of the generated parts can be found
-in the [PDK documentation][1].
-
-The README template below provides a starting point with details about what
-information to include in your README.
+A bolt plan which make use of Google's [log4jscanner][1] to allow scanning of Windows and Linux hosts at scale for the [log4shell][2] vulnerability.
 
 ## Table of Contents
 
@@ -19,41 +15,33 @@ information to include in your README.
 
 ## Description
 
-Briefly tell users why they might want to use your module. Explain what your
-module does and what kind of problems users can solve with it.
-
-This should be a fairly short description helps the user decide if your module
-is what they want.
+A bolt plan which make use of Google's [log4jscanner][1] to allow scanning of Windows and Linux hosts at scale for the [log4shell][2] vulnerability. 
 
 ## Setup
 
-### What bolt_log4j affects **OPTIONAL**
+### What bolt_log4j affects
 
-If it's obvious what your module touches, you can skip this section. For
-example, folks can probably figure out that your mysql_instance module affects
-their MySQL instances.
+Bolt_log4j makes the following changes on systems.
 
-If there's more that they should know about, though, this is the place to
-mention:
+* Installs Puppet agent binaries.
+* Extracts the log4jscanner. By default it uses the following paths.
+    * Windows: c:\
+    * Linux: /tmp
+* Executes the log4jscanner on the system. By default it scans the following paths
+    * Windows: c:\
+    * Linux /
 
-* Files, packages, services, or operations that the module will alter, impact,
-  or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
 
-### Setup Requirements **OPTIONAL**
+### Setup Requirements
 
-If your module requires anything extra before setting up (pluginsync enabled,
-another module, etc.), mention it here.
+bolt_log4j requires [Puppet Bolt][3] to be installed on the scanning machine only.
 
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you might want to include an additional "Upgrading" section here.
+Run bolt_log4j from a machine with access to the hosts you wish to scan. Port TCP/22 (SSH - Linux) and TCP/5985, TCP/5986 (WinRM - Windows) need to be open from the scanning machine to the target machines. Root or administrator credentials are also required for the target hosts. For Linux systems, a SSH key pair is recommended. 
 
 ### Beginning with bolt_log4j
 
-The very basic steps needed for a user to get the module up and running. This
-can include setup steps, if necessary, or it can be an example of the most basic
-use of the module.
+1. Install [Puppet Bolt][3]
+2. Create
 
 ## Usage
 
@@ -112,6 +100,6 @@ If you aren't using changelog, put your release notes here (though you should
 consider using changelog). You can also add any additional sections you feel are
 necessary or important to include here. Please use the `##` header.
 
-[1]: https://puppet.com/docs/pdk/latest/pdk_generating_modules.html
-[2]: https://puppet.com/docs/puppet/latest/puppet_strings.html
-[3]: https://puppet.com/docs/puppet/latest/puppet_strings_style.html
+[1]: https://github.com/google/log4jscanner
+[2]: https://en.wikipedia.org/wiki/Log4Shell
+[3]: https://www.puppet.com/docs/bolt/latest/bolt_installing

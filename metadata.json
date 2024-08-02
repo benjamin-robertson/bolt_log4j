@@ -2,9 +2,9 @@
   "name": "benjaminrobertson-bolt_log4j",
   "version": "0.1.0",
   "author": "benjaminrobertson",
-  "summary": "",
+  "summary": "A bolt plan which make use of Google's log4jscanner to allow scanning of Windows and Linux hosts at scale for the log4shell vulnerability.",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "https://github.com/benjamin-robertson/bolt_log4j",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
@@ -25,7 +25,9 @@
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
-        "7"
+        "7",
+        "8",
+        "9"
       ]
     },
     {
@@ -37,12 +39,6 @@
       ]
     },
     {
-      "operatingsystem": "Scientific",
-      "operatingsystemrelease": [
-        "7"
-      ]
-    },
-    {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
         "10"
@@ -51,7 +47,6 @@
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "18.04",
         "20.04",
         "22.04",
         "24.04"

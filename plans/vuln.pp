@@ -1,14 +1,18 @@
-# @summary Bolt plan to detect hosts vulnerable to log4j
+# @summary Bolt plan to detect hosts vulnerable to log4shell.
 #
 # lint:ignore:140chars
 #
 # @param targets The targets to run on.
-# @param windows_file_path File path to install the log4j scanner on windows. Default 'C:\'
-# @param linux_file_path File path to install the log4j scanner on Linux. Default '/tmp'
+# @param windows_install_path File path to install the log4j scanner on windows. Default 'c:\\'
+# @param linux_install_path File path to install the log4j scanner on Linux. Default '/tmp'
+# @param windows_scan_path File systems path to scan on Windows. Will scan recursively from this directory. Default 'c:\\'
+# @param linux_scan_path File systems path to scan on Linux. Will scan recursively from this directory. Default '/'
 plan bolt_log4j::vuln (
   TargetSpec          $targets,
-  Stdlib::Windowspath $windows_file_path = 'c:\\',
-  Stdlib::Unixpath    $linux_file_path   = '/tmp'
+  Stdlib::Windowspath $windows_install_path = 'c:\\',
+  Stdlib::Unixpath    $linux_install_path   = '/tmp',
+  Stdlib::Windowspath $windows_scan_path    = 'c:\\',
+  Stdlib::Unixpath    $linux_scan_path      = '/',
 ) {
   $final_target = get_targets($targets)
 
@@ -26,11 +30,11 @@ plan bolt_log4j::vuln (
     '_description'  => 'Extract archive on Linux',
     '_catch_errors' => true,
   '_run_as'       => 'root') {
-    archive { "${linux_file_path}/log4jscanner-v0.5.0-linux-amd64.tar.gz":
+    archive { "${linux_install_path}/log4jscanner-v0.5.0-linux-amd64.tar.gz":
       ensure       => present,
-      creates      => "${linux_file_path}/log4jscanner/log4jscanner",
+      creates      => "${linux_install_path}/log4jscanner/log4jscanner",
       source       => 'puppet:///modules/bolt_log4j/log4jscanner-v0.5.0-linux-amd64.tar.gz',
-      extract_path => $linux_file_path,
+      extract_path => $linux_install_path,
       extract      => true,
     }
 
@@ -49,27 +53,22 @@ plan bolt_log4j::vuln (
   $win_apply_results = apply($win_targets,
     '_description'  => 'Extract archive on Windows',
   '_catch_errors' => true) {
-    archive { "${windows_file_path}log4jscanner-v0.5.0-windows-amd64.zip":
+    archive { "${windows_install_path}log4jscanner-v0.5.0-windows-amd64.zip":
       ensure       => present,
-      creates      => "${windows_file_path}log4jscanner\\log4jscanner.exe",
+      creates      => "${windows_install_path}log4jscanner\\log4jscanner.exe",
       source       => 'puppet:///modules/bolt_log4j/log4jscanner-v0.5.0-windows-amd64.zip',
-      extract_path => $windows_file_path,
+      extract_path => $windows_install_path,
       extract      => true,
     }
   }
-
-  # out::message("Windows apply results ${win_apply_results}")
 
   $win_apply_okay = $win_apply_results.ok_set.names
   $win_apply_okay_targets = get_targets($win_apply_okay)
   $win_apply_failed = $win_apply_results.error_set.names
 
   # Run the vulnerablity scan
-  $linux_vuln_results = run_command('/tmp/log4jscanner/log4jscanner /', $linux_apply_okay_targets, '_catch_errors' => true, '_run_as' => 'root' )
-  $win_vuln_results = run_command('C:\\log4jscanner\\log4jscanner.exe c:\\', $win_apply_okay_targets, '_catch_errors' => true )
-
-  # out::message("Linux vuln results ${linux_vuln_results}")
-  # out::message("Win vuln results ${win_vuln_results}")
+  $linux_vuln_results = run_command("/tmp/log4jscanner/log4jscanner ${linux_scan_path}", $linux_apply_okay_targets, '_catch_errors' => true, '_run_as' => 'root' )
+  $win_vuln_results = run_command("C:\\log4jscanner\\log4jscanner.exe ${windows_scan_path}", $win_apply_okay_targets, '_catch_errors' => true )
 
   # Get vulnerable systems
   $vulnerable_linux_systems = $linux_vuln_results.ok_set.filter | $result | { $result.value['stdout'].length > 1 }
