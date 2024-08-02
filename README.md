@@ -9,7 +9,6 @@ A bolt plan which make use of Google's [log4jscanner][1] to allow scanning of Wi
     * [What bolt_log4j affects](#what-bolt_log4j-affects)
     * [Setup requirements](#setup-requirements)
     * [Beginning with bolt_log4j](#beginning-with-bolt_log4j)
-1. [Usage - Configuration options and additional functionality](#usage)
 1. [Limitations - OS compatibility, etc.](#limitations)
 1. [Development - Guide for contributing to the module](#development)
 
@@ -41,48 +40,56 @@ Run bolt_log4j from a machine with access to the hosts you wish to scan. Port TC
 ### Beginning with bolt_log4j
 
 1. Install [Puppet Bolt][3]
-2. Create
+2. Create a directory for bolt project. `mkdir log4j_scanner`
+3. Change into project directory. `cd log4j_scanner`
+4. Init a new bolt project. `bolt project init`
+5. Open the `bolt-project.yaml`. Update to include the bolt_log4j module as shown.
+```
+modules:
+  - git: https://github.com/benjamin-robertson/bolt_log4j.git
+    ref: 'main'
+```
+6. Install the modules by running `bolt module install`. Hint, if you need to force a refresh of modules you can run `bolt module install --force`
+7. Confirm plan is install by running. `bolt plan show`. Confirm the `bolt_log4j::vuln` plan is showing.
+8. Configure bolt [inventory.yaml][4] file as shown. You will most likely need to customize these options for your own environment, see [transport options][5].
+```
+---
+config:
+  transport: ssh
+  ssh:
+    user: ec2-user
+    host-key-check: false
+    native-ssh: true
+    private-key: /home/ubuntu/.ssh/id_rsa.pem
+    ssh-command: /usr/bin/ssh
+groups:
+  - name: rhel
+    targets:
+      - ip-10-64-61-143.ap-southeast-2.compute.internal
+      - ip-10-64-229-181.ap-southeast-2.compute.internal
+  - name: ubuntu
+    targets:
+      - 10.64.41.234
+      - 10.64.214.252
+      - 10.64.117.212
+    config:
+      ssh:
+        user: ubuntu
+  - name: windows
+    targets:
+      - 10.64.149.16
+    config:
+      transport: winrm
+      winrm:
+        user: tempadmin
+        password: <your_password>
+        ssl: false
+```
+9. To confirm 
 
 ## Usage
 
-Include usage examples for common use cases in the **Usage** section. Show your
-users how to use your module to solve problems, and be sure to include code
-examples. Include three to five examples of the most important or common tasks a
-user can accomplish with your module. Show users how to accomplish more complex
-tasks that involve different types, classes, and functions working in tandem.
 
-## Reference
-
-This section is deprecated. Instead, add reference information to your code as
-Puppet Strings comments, and then use Strings to generate a REFERENCE.md in your
-module. For details on how to add code comments and generate documentation with
-Strings, see the [Puppet Strings documentation][2] and [style guide][3].
-
-If you aren't ready to use Strings yet, manually create a REFERENCE.md in the
-root of your module directory and list out each of your module's classes,
-defined types, facts, functions, Puppet tasks, task plans, and resource types
-and providers, along with the parameters for each.
-
-For each element (class, defined type, function, and so on), list:
-
-* The data type, if applicable.
-* A description of what the element does.
-* Valid values, if the data type doesn't make it obvious.
-* Default value, if any.
-
-For example:
-
-```
-### `pet::cat`
-
-#### Parameters
-
-##### `meow`
-
-Enables vocalization in your cat. Valid options: 'string'.
-
-Default: 'medium-loud'.
-```
 
 ## Limitations
 
@@ -94,12 +101,8 @@ warnings.
 In the Development section, tell other users the ground rules for contributing
 to your project and how they should submit their work.
 
-## Release Notes/Contributors/Etc. **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You can also add any additional sections you feel are
-necessary or important to include here. Please use the `##` header.
-
 [1]: https://github.com/google/log4jscanner
 [2]: https://en.wikipedia.org/wiki/Log4Shell
 [3]: https://www.puppet.com/docs/bolt/latest/bolt_installing
+[4]: https://www.puppet.com/docs/bolt/latest/inventory_files
+[5]: https://www.puppet.com/docs/bolt/latest/bolt_transports_reference
