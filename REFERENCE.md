@@ -34,7 +34,7 @@ The targets to run on.
 
 Data type: `Stdlib::Windowspath`
 
-File path to install the log4j scanner on windows. Default 'c:\\'
+File path to install the log4j scanner on windows.
 
 Default value: `'c:\\'`
 
@@ -42,7 +42,7 @@ Default value: `'c:\\'`
 
 Data type: `Stdlib::Unixpath`
 
-File path to install the log4j scanner on Linux. Default '/tmp'
+File path to install the log4j scanner on Linux.
 
 Default value: `'/tmp'`
 
@@ -50,7 +50,7 @@ Default value: `'/tmp'`
 
 Data type: `Stdlib::Windowspath`
 
-File systems path to scan on Windows. Will scan recursivly from this directory. Default 'c:\\'
+File systems path to scan on Windows. Will scan recursively from this directory.
 
 Default value: `'c:\\'`
 
@@ -58,7 +58,7 @@ Default value: `'c:\\'`
 
 Data type: `Stdlib::Unixpath`
 
-File systems path to scan on Linux. Will scan recursivly from this directory. Default '/'
+File systems path to scan on Linux. Will scan recursively from this directory.
 
 Default value: `'/'`
 

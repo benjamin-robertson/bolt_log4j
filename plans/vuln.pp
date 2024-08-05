@@ -3,10 +3,10 @@
 # lint:ignore:140chars
 #
 # @param targets The targets to run on.
-# @param windows_install_path File path to install the log4j scanner on windows. Default 'c:\\'
-# @param linux_install_path File path to install the log4j scanner on Linux. Default '/tmp'
-# @param windows_scan_path File systems path to scan on Windows. Will scan recursively from this directory. Default 'c:\\'
-# @param linux_scan_path File systems path to scan on Linux. Will scan recursively from this directory. Default '/'
+# @param windows_install_path File path to install the log4j scanner on windows.
+# @param linux_install_path File path to install the log4j scanner on Linux.
+# @param windows_scan_path File systems path to scan on Windows. Will scan recursively from this directory.
+# @param linux_scan_path File systems path to scan on Linux. Will scan recursively from this directory.
 plan bolt_log4j::vuln (
   TargetSpec          $targets,
   Stdlib::Windowspath $windows_install_path = 'c:\\',
