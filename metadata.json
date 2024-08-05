@@ -5,6 +5,8 @@
   "summary": "A bolt plan which make use of Google's log4jscanner to allow scanning of Windows and Linux hosts at scale for the log4shell vulnerability.",
   "license": "Apache-2.0",
   "source": "https://github.com/benjamin-robertson/bolt_log4j",
+  "project_page": "https://github.com/benjamin-robertson/bolt_log4j",
+  "issues_url": "https://github.com/benjamin-robertson/bolt_log4j/issues",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
