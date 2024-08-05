@@ -39,7 +39,7 @@ plan bolt_log4j::vuln (
     }
 
     # confirm the file is exectable by all
-    file { '/tmp/log4jscanner-v0.5.0-linux-amd64.tar.gz':
+    file { '/tmp/log4jscanner/log4jscanner':
       ensure => file,
       mode   => '0755',
     }
